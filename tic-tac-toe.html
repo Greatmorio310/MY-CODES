@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="style.css"/>
+    <style>
+        body.win-X {
+            background-color: blue;
+            transition: background-color 0.5s ease;
+        }
+
+        body.win-O {
+            background-color: aqua;
+            transition: background-color 0.5s ease;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            background-color: #eee;
+            border: 2px solid #555;
+        }
+    </style>
+</head>
+<body>
+  <h1 style="text-align: center;">Tic-Tac-Toe</h1>
+  <div style="text-align: center;">
+    <p>
+        <strong>X:</strong> <span id="scoreX">0</span>
+        <strong>O:</strong> <span id="scoreO">0</span>
+    </p>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+  <div class="board" id="board"></div>
+  <div id="win-banner" style="
+  display: none;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  color: black;
+  font-size: 2em;
+  padding: 20px 40px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(red, green, blue, alpha);
+  z-index: 9999;
+  text-align: center;
+  animation: pop 0.5s ease;
+  "></div>
+
+  <style>
+    @keyframes pop {
+        from {
+            transform: translate(-50%, -50%) scale(0.7);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+    }
+  </style>
+  <style>
+    
+    .cell.X {
+        color: red;
+    }
+
+    .cell.O {
+        color: blue;
+    } 
+  </style>
+<style>
+    body {
+        background-image: url(Annotation\ 2024-06-06\ 171429.png);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        font-family: Arial, sans-serif;
+        color: #fff;
+    }
+</style>
+  
+  <script>
+    const board = document.getElementById('board');
+    let turn = 'X';
+    let cells = Array(9).fill('');
+    let scoreX = 0
+    let scoreO = 0
+
+    function checkWinner() {
+        const winPatterns = [
+            [0,1,2], [3,4,5], [6,7,8],
+            [0,3,6], [1,4,7], [2,5,8],
+            [0,4,8], [2,4,6]
+        ];
+
+        for (const [a, b, c] of winPatterns) {
+            if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+                const banner = document.getElementById('win-banner');
+                banner.textContent = '${cells[a]} wins!';
+                banner.style.display = 'block';
+
+                document.body.classList.add('win-${cells[a]}');
+
+                setTimeout(() => {
+                   document.body.classList.remove('win-${cells[a]}'); 
+                }, 1500);
+
+                if (cells[a] === 'X') scoreX++;
+                else scoreO++;
+                
+                document.getElementById('scoreX').textContent = scoreX;
+                document.getElementById('scoreO').textContent = scoreO;
+                
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 1500);
+                
+                setTimeout(() => restartBoard(), 500);
+                return;
+                
+            }
+        }
+        
+        if (!cells.includes('')) {
+            alert("It's a draw!");
+            setTimeout(() => restartBoard(), 500);
+        }
+    }
+
+    function drawBoard() {
+        board.innerHTML = '';
+        cells.forEach((cell, i) => {
+            const div = document.createElement('div');
+            div.className = 'cell';
+            div.textContent = cell;
+
+            if (cell === 'X') div.classList.add('x');
+            if (cell === 'O') div.classList.add('O');
+
+            div.onclick = () => {
+                if (!cells[i]) {
+                    cells[i] = turn;
+                    turn = turn === 'X' ? 'O' : 'X';
+                    drawBoard();
+                    checkWinner();
+                }
+            };
+            board.appendChild(div);
+        });
+    }
+    
+    function restartGame() {
+        scoreX = 0;
+        scoreO = 0;
+        document.getElementById('scoreX').textContent = scoreX;
+        document.getElementById('scoreO').textContent = scoreO;
+        restartBoard();
+    }
+
+    drawBoard();
+  </script>
+</body>
+</html>
